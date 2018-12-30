@@ -2,6 +2,8 @@
 name = "psort"
 version = "0.0.1"
 authors = ["Sebastian Kriems <bastoberto@gmx.de>"]
+description = "A small utility sorting jpeg files by date"
+license = "MIT"
 
 [dependencies]
 clap = "2.32.0"
