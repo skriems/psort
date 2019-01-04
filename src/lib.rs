@@ -60,7 +60,8 @@ pub fn process_jpeg(
     file: &fs::DirEntry,
     src: &Path,
     dest: &Option<Box<&Path>>,
-    copy: &bool) -> Result<(), Box<error::Error>> {
+    copy: &bool,
+    overwrite: &bool) -> Result<(), Box<error::Error>> {
 
     let exif_data = exif_data(file)?;
     let dt_field = exif_data.get_field(exif::Tag::DateTime, false);
@@ -80,6 +81,13 @@ pub fn process_jpeg(
 
         let source_file = src.join(file.file_name());
         let target_file = target_dir.join(file.file_name());
+
+        if target_file.exists() && !*overwrite {
+            return Err(
+                Box::new(io::Error::new(
+                    io::ErrorKind::Other,
+                    "file already exists")));
+        }
 
         if *copy {
             fs::copy(source_file, target_file)?;

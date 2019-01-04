@@ -31,6 +31,10 @@ fn main() {
              .short("c")
              .long("copy")
              .help("copy files instead of moving"))
+        .arg(Arg::with_name("overwrite")
+             .short("o")
+             .long("overwrite")
+             .help("overwrite existing files"))
         .get_matches();
 
     if let Err(e) = run(args) {
@@ -49,13 +53,14 @@ pub fn run(args: ArgMatches) -> Result<(), Box<Error>> {
     }
 
     let copy = args.is_present("copy");
+    let overwrite = args.is_present("overwrite");
 
     if src.is_file() {
         return err!("source argument cannot be a file: {:?}", src);
     }
 
     for pic in psort::jpegs(&src)? {
-        match psort::process_jpeg(&pic, &src, &dest, &copy) {
+        match psort::process_jpeg(&pic, &src, &dest, &copy, &overwrite) {
             Ok(()) => continue,
             Err(e) => eprintln!("{}: {:?}", e, &pic.file_name()),
         }

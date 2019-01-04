@@ -18,6 +18,7 @@ psort [FLAGS] <src> [dest]
 FLAGS:
     -c, --copy       copy files instead of moving
     -h, --help       Prints help information
+    -o, --overwrite  overwrite existing files
     -V, --version    Prints version information
 
 ARGS:
