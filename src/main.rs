@@ -52,9 +52,10 @@ pub fn run(args: ArgMatches) -> Result<(), Box<Error>> {
     }
 
     for pic in psort::jpegs(&src)? {
-        // TODO match `Some` and `Err` here and return a summary of
-        // errors that occured
-        psort::process_jpeg(&pic, &src, &copy)?;
+        match psort::process_jpeg(&pic, &src, &copy) {
+            Ok(()) => continue,
+            Err(e) => eprintln!("{}: {:?}", e, &pic.file_name()),
+        }
     }
     Ok(())
 }
