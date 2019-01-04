@@ -69,9 +69,9 @@ pub fn process_jpeg(
         let dstr = format!("{}", dt_field.value.display_as(dt_field.tag));
         let dt = NaiveDateTime::parse_from_str(&dstr, "%Y-%m-%d %H:%M:%S")?;
 
-        let mut target_dir = src.join(format!("{}", dt.month()));
+        let mut target_dir = src.join(format!("{}/{}", dt.year(), dt.month()));
         if let Some(dest) = dest {
-            target_dir = dest.join(format!("{}", dt.month()));
+            target_dir = dest.join(format!("{}/{}", dt.year(), dt.month()));
         }
 
         if !target_dir.exists() {
