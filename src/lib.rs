@@ -56,14 +56,23 @@ pub fn jpegs(path: &Path) -> Result<Vec<fs::DirEntry>, io::Error> {
 /// 1. get the datetime information from the jpeg file
 /// 2. ensure a folder for the corresponding month a present
 /// 3. move the jpeg file into that
-pub fn process_jpeg(file: &fs::DirEntry, src: &Path, copy: &bool) -> Result<(), Box<error::Error>> {
+pub fn process_jpeg(
+    file: &fs::DirEntry,
+    src: &Path,
+    dest: &Option<Box<&Path>>,
+    copy: &bool) -> Result<(), Box<error::Error>> {
+
     let exif_data = exif_data(file)?;
     let dt_field = exif_data.get_field(exif::Tag::DateTime, false);
     if let Some(dt_field) = dt_field {
 
         let dstr = format!("{}", dt_field.value.display_as(dt_field.tag));
         let dt = NaiveDateTime::parse_from_str(&dstr, "%Y-%m-%d %H:%M:%S")?;
-        let target_dir = src.join(format!("{}", dt.month()));
+
+        let mut target_dir = src.join(format!("{}", dt.month()));
+        if let Some(dest) = dest {
+            target_dir = dest.join(format!("{}", dt.month()));
+        }
 
         if !target_dir.exists() {
             fs::create_dir_all(&target_dir)?;

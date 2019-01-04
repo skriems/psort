@@ -23,13 +23,10 @@ fn main() {
         .arg(Arg::with_name("src")
              .required(true)
              .takes_value(true)
-             .help("source folder containing jpeg files"))
-        // TODO
-        // .arg(Arg::with_name("dest")
-        //      .required(false)
-        //      .takes_value(true)
-        //      .index(2)
-        //      .help("destination folder"))
+             .help("source folder"))
+        .arg(Arg::with_name("dest")
+             .takes_value(true)
+             .help("destination folder (optional)"))
         .arg(Arg::with_name("copy")
              .short("c")
              .long("copy")
@@ -45,6 +42,12 @@ fn main() {
 
 pub fn run(args: ArgMatches) -> Result<(), Box<Error>> {
     let src = Path::new(args.value_of("src").unwrap());
+
+    let mut dest: Option<Box<&Path>> = None;
+    if let Some(_dest) = args.value_of("dest") {
+        dest = Some(Box::new(Path::new(_dest)));
+    }
+
     let copy = args.is_present("copy");
 
     if src.is_file() {
@@ -52,7 +55,7 @@ pub fn run(args: ArgMatches) -> Result<(), Box<Error>> {
     }
 
     for pic in psort::jpegs(&src)? {
-        match psort::process_jpeg(&pic, &src, &copy) {
+        match psort::process_jpeg(&pic, &src, &dest, &copy) {
             Ok(()) => continue,
             Err(e) => eprintln!("{}: {:?}", e, &pic.file_name()),
         }
