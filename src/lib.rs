@@ -29,8 +29,8 @@ pub fn exif_data(entry: &fs::DirEntry) -> Result<exif::Reader, exif::Error> {
 /// Utility function for `filter_map` which returns the file handle if the lowercase
 /// extension corresponds to either "jpeg" or "jpg"
 pub fn is_jpeg(file: fs::DirEntry) -> Option<fs::DirEntry> {
-    if file.path().is_file() {
-        if let Some(ext) = file.path().extension().unwrap().to_str() {
+    if let Some(extension) = file.path().extension() {
+        if let Some(ext) = extension.to_str() {
             let lower_ext = String::from(ext).to_lowercase();
             if lower_ext == "jpeg" || lower_ext == "jpg" {
                 return Some(file)
