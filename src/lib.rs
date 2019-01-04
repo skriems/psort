@@ -48,7 +48,6 @@ pub fn jpegs(path: &Path) -> Result<Vec<fs::DirEntry>, io::Error> {
         .filter_map(|f| f.ok())
         .filter_map(|f| is_jpeg(f))
         .collect::<Vec<fs::DirEntry>>();
-    println!("{:?}", jpegs);
     Ok(jpegs)
 }
 
@@ -66,15 +65,12 @@ pub fn process_jpeg(file: &fs::DirEntry, src: &Path) -> Result<(), Box<error::Er
         let dt = NaiveDateTime::parse_from_str(&dstr, "%Y-%m-%d %H:%M:%S")?;
         let target_dir = src.join(format!("{}", dt.month()));
 
-        println!("{:?} exists: {:?}", target_dir, target_dir.exists());
         if !target_dir.exists() {
-            println!("creating directory: {:?}", target_dir);
             fs::create_dir_all(&target_dir)?;
         }
 
         let source_file = src.join(file.file_name());
         let target_file = target_dir.join(file.file_name());
-        println!("renaming {:?} to {:?}", source_file, target_file);
         // TODO copy if desired by user
         fs::rename(source_file, target_file)?;
     }
