@@ -23,7 +23,6 @@ fn main() {
         .arg(Arg::with_name("src")
              .required(true)
              .takes_value(true)
-             .index(1)
              .help("source folder containing jpeg files"))
         // TODO
         // .arg(Arg::with_name("dest")
@@ -31,6 +30,10 @@ fn main() {
         //      .takes_value(true)
         //      .index(2)
         //      .help("destination folder"))
+        .arg(Arg::with_name("copy")
+             .short("c")
+             .long("copy")
+             .help("copy files instead of moving"))
         .get_matches();
 
     if let Err(e) = run(args) {
@@ -42,6 +45,7 @@ fn main() {
 
 pub fn run(args: ArgMatches) -> Result<(), Box<Error>> {
     let src = Path::new(args.value_of("src").unwrap());
+    let copy = args.is_present("copy");
 
     if src.is_file() {
         return err!("source argument cannot be a file: {:?}", src);
@@ -50,7 +54,7 @@ pub fn run(args: ArgMatches) -> Result<(), Box<Error>> {
     for pic in psort::jpegs(&src)? {
         // TODO match `Some` and `Err` here and return a summary of
         // errors that occured
-        psort::process_jpeg(&pic, &src)?;
+        psort::process_jpeg(&pic, &src, &copy)?;
     }
     Ok(())
 }

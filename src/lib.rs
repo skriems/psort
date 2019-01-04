@@ -56,7 +56,7 @@ pub fn jpegs(path: &Path) -> Result<Vec<fs::DirEntry>, io::Error> {
 /// 1. get the datetime information from the jpeg file
 /// 2. ensure a folder for the corresponding month a present
 /// 3. move the jpeg file into that
-pub fn process_jpeg(file: &fs::DirEntry, src: &Path) -> Result<(), Box<error::Error>> {
+pub fn process_jpeg(file: &fs::DirEntry, src: &Path, copy: &bool) -> Result<(), Box<error::Error>> {
     let exif_data = exif_data(file)?;
     let dt_field = exif_data.get_field(exif::Tag::DateTime, false);
     if let Some(dt_field) = dt_field {
@@ -71,8 +71,12 @@ pub fn process_jpeg(file: &fs::DirEntry, src: &Path) -> Result<(), Box<error::Er
 
         let source_file = src.join(file.file_name());
         let target_file = target_dir.join(file.file_name());
-        // TODO copy if desired by user
-        fs::rename(source_file, target_file)?;
+
+        if *copy {
+            fs::copy(source_file, target_file)?;
+        } else {
+            fs::rename(source_file, target_file)?;
+        }
     }
     Ok(())
 }
