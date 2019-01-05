@@ -24,7 +24,7 @@ The cli is pretty straight forward:
 psort [FLAGS] <src> [dest]
 
 FLAGS:
-    -c, --copy       copy files instead of moving
+    -m, --move       move files instead of copying
     -h, --help       Prints help information
     -o, --overwrite  overwrite existing files
     -V, --version    Prints version information
