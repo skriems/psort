@@ -60,7 +60,7 @@ pub fn process_jpeg(
     file: &fs::DirEntry,
     src: &Path,
     dest: &Option<Box<&Path>>,
-    copy: &bool,
+    _move: &bool,
     overwrite: &bool) -> Result<(), Box<error::Error>> {
 
     let exif_data = exif_data(file)?;
@@ -89,7 +89,7 @@ pub fn process_jpeg(
                     "file already exists")));
         }
 
-        if *copy {
+        if !_move {
             fs::copy(source_file, target_file)?;
         } else {
             fs::rename(source_file, target_file)?;

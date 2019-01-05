@@ -27,10 +27,10 @@ fn main() {
         .arg(Arg::with_name("dest")
              .takes_value(true)
              .help("destination folder (optional)"))
-        .arg(Arg::with_name("copy")
-             .short("c")
-             .long("copy")
-             .help("copy files instead of moving"))
+        .arg(Arg::with_name("move")
+             .short("m")
+             .long("move")
+             .help("move files instead of copying"))
         .arg(Arg::with_name("overwrite")
              .short("o")
              .long("overwrite")
@@ -52,7 +52,7 @@ pub fn run(args: ArgMatches) -> Result<(), Box<error::Error>> {
         dest = Some(Box::new(Path::new(_dest)));
     }
 
-    let copy = args.is_present("copy");
+    let _move = args.is_present("move");
     let overwrite = args.is_present("overwrite");
 
     if src.is_file() {
@@ -60,7 +60,7 @@ pub fn run(args: ArgMatches) -> Result<(), Box<error::Error>> {
     }
 
     for pic in psort::jpegs(&src)? {
-        match psort::process_jpeg(&pic, &src, &dest, &copy, &overwrite) {
+        match psort::process_jpeg(&pic, &src, &dest, &_move, &overwrite) {
             Ok(()) => continue,
             Err(e) => eprintln!("{}: {:?}", e, &pic.file_name()),
         }
