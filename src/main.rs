@@ -17,7 +17,7 @@ macro_rules! err {
 
 fn main() {
     let args = App::new("psort")
-        .version("0.1.2")
+        .version("0.2.0")
         .author("Sebastian Kriems <bastoberto@gmx.de>")
         .about("Sorting your pictures by date")
         .arg(Arg::with_name("src")
