@@ -52,10 +52,10 @@ pub fn jpegs(path: &Path) -> Result<Vec<fs::DirEntry>, io::Error> {
 }
 
 
-/// This function that does the actual work
+/// The function that does the actual work
 /// 1. get the datetime information from the jpeg file
-/// 2. ensure a folder for the corresponding month a present
-/// 3. move the jpeg file into that
+/// 2. ensure the necessary folder structure: <dest>/<year>/<month>/
+/// 3. copy or move the jpeg file there
 pub fn process_jpeg(
     file: &fs::DirEntry,
     src: &Path,
