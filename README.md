@@ -6,7 +6,15 @@
 
 You don't want to rely on some 3rd party software to organize your pictures? `psort` to the rescue!
 
-`psort` looks up the month in which your JPEG files were shot, creates a folder per month and moves the pictures into their corresponding folders. If you prefer to have them copied, you can do that as well.
+`psort` looks up the year and month in which your JPEG files were shot, creates the necessary folder structure and copies or moves your pictures there.
+
+Installation
+------------
+To install `psort` use cargo and add `~/.cargo/bin` to your PATH:
+
+```
+cargo install psort
+```
 
 Usage
 -----
