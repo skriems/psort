@@ -4,14 +4,14 @@ extern crate exif;
 extern crate psort;
 mod tests;
 
-use std::error::Error;
+use std::error;
 use std::path::Path;
 use std::process;
 
 use clap::{App, Arg, ArgMatches};
 
 macro_rules! err {
-    ($($tt:tt)*) => { Err(Box::<Error>::from(format!($($tt)*))) }
+    ($($tt:tt)*) => { Err(Box::<error::Error>::from(format!($($tt)*))) }
 }
 
 
@@ -44,7 +44,7 @@ fn main() {
 }
 
 
-pub fn run(args: ArgMatches) -> Result<(), Box<Error>> {
+pub fn run(args: ArgMatches) -> Result<(), Box<error::Error>> {
     let src = Path::new(args.value_of("src").unwrap());
 
     let mut dest: Option<Box<&Path>> = None;
