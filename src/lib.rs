@@ -1,5 +1,8 @@
 //! # psort
-//! A small utility sorting jpeg files by date
+//! A small utility for sorting jpeg files by date.
+//!
+//! `psort` looks up the year and month in which your JPEG files were shot,
+//! creates the necessary folder structure and copies or moves your pictures there.
 extern crate chrono;
 extern crate exif;
 
@@ -12,22 +15,22 @@ use std::path::{Path, PathBuf};
 use chrono::{Datelike, NaiveDateTime};
 
 
+/// Returns the file handle or possible Error
 pub fn file_handle(path: &str) -> Result<fs::File, io::Error> {
     let file = fs::File::open(path)?;
     Ok(file)
 }
 
 
-/// Returns either the Exif data or a possible Error
+/// Returns the exif data of a JPEG file or a possible error
 pub fn exif_data(entry: &fs::DirEntry) -> Result<exif::Reader, exif::Error> {
     let file = file_handle(&entry.path().to_str().unwrap())?;
     let reader = exif::Reader::new(&mut BufReader::new(file))?;
     Ok(reader)
 }
 
-
-/// Utility function for `filter_map` which returns the file handle if the lowercase
-/// extension corresponds to either "jpeg" or "jpg"
+/// Returns the file handle if the lowercase extension corresponds to
+/// either "jpeg" or "jpg". Useful in `filter_map`.
 pub fn is_jpeg(file: fs::DirEntry) -> Option<fs::DirEntry> {
     if let Some(extension) = file.path().extension() {
         if let Some(ext) = extension.to_str() {
