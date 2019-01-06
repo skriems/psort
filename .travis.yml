@@ -1,0 +1,10 @@
+language: rust
+rust:
+  - stable
+  - nightly
+cache: cargo
+matrix:
+  fast_finish: true
+script:
+  - cargo build --verbose
+  - cargo test --verbose
