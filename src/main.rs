@@ -59,7 +59,7 @@ pub fn run(args: ArgMatches) -> Result<(), Box<error::Error>> {
         return err!("source argument cannot be a file: {:?}", src);
     }
 
-    for pic in psort::jpegs(&src)? {
+    for pic in psort::jpeg_files(&src)? {
         match psort::process_jpeg(&pic, &src, &dest, &_move, &overwrite) {
             Ok(()) => continue,
             Err(e) => eprintln!("{}: {:?}", e, &pic.file_name()),
