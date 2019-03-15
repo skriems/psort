@@ -16,7 +16,7 @@ use chrono::{Datelike, NaiveDateTime};
 
 
 /// Returns the file handle or possible Error
-pub fn file_handle(path: &str) -> Result<fs::File, io::Error> {
+pub fn file_handle(path: &str) -> io::Result<fs::File> {
     let file = fs::File::open(path)?;
     Ok(file)
 }
@@ -45,7 +45,7 @@ pub fn is_jpeg(file: fs::DirEntry) -> Option<fs::DirEntry> {
 
 
 /// Returns a vector of jepg files in a directory to which the user has permissions
-pub fn jpeg_files(path: &Path) -> Result<Vec<fs::DirEntry>, io::Error> {
+pub fn jpeg_files(path: &Path) -> io::Result<Vec<fs::DirEntry>> {
     // TODO return Iterator
     let jpegs = fs::read_dir(path)?
         .filter_map(|f| f.ok())
