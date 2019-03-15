@@ -1,66 +1,66 @@
-extern crate clap;
 extern crate chrono;
 extern crate exif;
 extern crate psort;
+
+extern crate structopt;
+
 mod tests;
 
 use std::error;
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use structopt::StructOpt;
 use std::process;
-
-use clap::{App, Arg, ArgMatches};
 
 macro_rules! err {
     ($($tt:tt)*) => { Err(Box::<error::Error>::from(format!($($tt)*))) }
 }
 
 
-fn main() {
-    let args = App::new("psort")
-        .version("0.2.2")
-        .author("Sebastian Kriems <bastoberto@gmx.de>")
-        .about("Sorting your pictures by date")
-        .arg(Arg::with_name("src")
-             .required(true)
-             .takes_value(true)
-             .help("source folder"))
-        .arg(Arg::with_name("dest")
-             .takes_value(true)
-             .help("destination folder (optional)"))
-        .arg(Arg::with_name("move")
-             .short("m")
-             .long("move")
-             .help("move files instead of copying"))
-        .arg(Arg::with_name("overwrite")
-             .short("o")
-             .long("overwrite")
-             .help("overwrite existing files"))
-        .get_matches();
+#[derive(StructOpt, Debug)]
+#[structopt(name = "psort", about = "Utility for sorting jpegs by date")]
+pub struct Opt {
+    /// source folder
+    #[structopt(parse(from_os_str))]
+    src: PathBuf,
 
-    if let Err(e) = run(args) {
+    /// destination folder
+    #[structopt(parse(from_os_str))]
+    dest: Option<PathBuf>,
+
+    /// move files instead of copying
+    #[structopt(short = "m", long = "move")]
+    r#move: bool,
+
+    /// overwrite existing files
+    #[structopt(short = "o", long = "overwrite")]
+    overwrite: bool,
+}
+
+fn main() {
+    let opt = Opt::from_args();
+    println!("{:?}", opt);
+
+    if let Err(e) = run(opt) {
         eprintln!("Error: {}", e);
         process::exit(1);
     }
 }
 
 
-pub fn run(args: ArgMatches) -> Result<(), Box<error::Error>> {
-    let src = Path::new(args.value_of("src").unwrap());
+pub fn run(opt: Opt) -> Result<(), Box<error::Error>> {
+    let src = Path::new(&opt.src);
 
     let mut dest: Option<Box<&Path>> = None;
-    if let Some(_dest) = args.value_of("dest") {
+    if let Some(_dest) = &opt.dest {
         dest = Some(Box::new(Path::new(_dest)));
     }
-
-    let _move = args.is_present("move");
-    let overwrite = args.is_present("overwrite");
 
     if src.is_file() {
         return err!("source argument cannot be a file: {:?}", src);
     }
 
     for pic in psort::jpeg_files(&src)? {
-        match psort::process_jpeg(&pic, &src, &dest, &_move, &overwrite) {
+        match psort::process_jpeg(&pic, &src, &dest, &opt.r#move, &opt.overwrite) {
             Ok(()) => continue,
             Err(e) => eprintln!("{}: {:?}", e, &pic.file_name()),
         }
