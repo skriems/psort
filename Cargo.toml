@@ -7,6 +7,6 @@ license = "MIT"
 edition = "2018"
 
 [dependencies]
-clap = "2.32.0"
+structopt = "0.2"
 chrono = "0.4.6"
 kamadak-exif = "0.3.1"
